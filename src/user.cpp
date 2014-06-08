@@ -20,8 +20,9 @@
 
 #include <list>
 #include <string>
-#include <std_utils/cconfig.h>
-#include <std_utils/std_util.h>
+
+#include "cconfig.h"
+#include "std_util.h"
 #include "core.h"
 
 using namespace std;

@@ -1,7 +1,7 @@
 
 
 # set the include path found by configure
-INCLUDES = $(all_includes)
+INCLUDES = $(all_includes) -I../std_utils/src
 
 # the library search path.
 
@@ -15,20 +15,7 @@ libaiml_a_DEPENDENCIES =
 pkginclude_HEADERS = errors.h aiml.h
 
 
-
-
-AM_CXXFLAGS = $(WERROR_CXXFLAG) -pedantic -Wall -ansi `xml2-config --cflags`
-
-
-
-
-
-
-
-
-
-
-
+AM_CXXFLAGS = $(WERROR_CXXFLAG) -pedantic -Wall -ansi `xml2-config --cflags` 
 
 
 noinst_HEADERS = aiml_parser.h caiml_parser.h config_parser.h core.h global.h\

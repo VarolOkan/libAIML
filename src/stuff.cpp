@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <ctype.h>
-#include <std_utils/std_util.h>
+#include "std_util.h"
 #include "core.h"
 using namespace std;
 using namespace aiml;

@@ -28,8 +28,8 @@
 #include <vector>
 #include <list>
 #include <map>
-#include <std_utils/cconfig.h>
 
+#include "cconfig.h"
 #include "aiml.h"
 #include "global.h"
 #include "errors.h"

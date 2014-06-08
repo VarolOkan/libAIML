@@ -2,7 +2,7 @@
 # have all needed files, that a GNU package needs
 AUTOMAKE_OPTIONS = foreign 1.4
 
-SUBDIRS = src test_app
+SUBDIRS = std_utils src test_app
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libaiml.pc

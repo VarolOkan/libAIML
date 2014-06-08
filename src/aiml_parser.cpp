@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <std_utils/std_util.h>
 #include <libxml/parserInternals.h>
+#include <string.h>
+
+#include "std_util.h"
 #include "core.h"
 
 using namespace std;

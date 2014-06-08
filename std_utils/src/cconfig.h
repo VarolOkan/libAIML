@@ -105,7 +105,7 @@ namespace std_util {
       std::ifstream file_stream;
   };
 
-};
+}
 
 namespace stdu = std_util;
 
