@@ -1,4 +1,4 @@
-bAIML
+AIML
 =======
 
 Derived off of :: libaiml :: by V01D
@@ -32,7 +32,10 @@ RUN:
 This should build std_util, libaiml, and the test_app.<p>
 
 cd test_app<br>
-cp libaiml.xml.dist libaiml.xml
-./test_app
+cp libaiml.xml.dist libaiml.xml<br>
+./test_app<p>
 
+_Once you have grown tired of chatting you can simply type
+
+quit
 
