@@ -14,13 +14,13 @@ BUILD:
 ./rebuild.sh
 
 This script will do the following 
-cd st_dutils/
-./configure 
-cd ..
+  cd st_dutils/
+  ./configure 
+  cd ..
 
-autoreconf -i
-./configure --enable-caiml --enable-pcrecpp
-make
+  autoreconf -i
+  ./configure --enable-caiml --enable-pcrecpp
+  make
 
 
 Note: --enable-javascript: JavaScript integration is broken at this moment but I intend to replace the previous integration of SpiderMonkey with googles v8 engine.
