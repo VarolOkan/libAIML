@@ -1,0 +1,8 @@
+* Add a tokenizer that works like an iterator (for the cases when the user knows it will
+tokenize a string completely)
+* Add more templates like operator<< (+ for example)
+
+* Add "[...]" sections to cConfig, make them available as a third (optional) parameter
+in GetKeyValue. Default value would be "" (global scope). exposeData()
+should be modified accordingly (dunno how yet), as retrocompatible as
+possible.

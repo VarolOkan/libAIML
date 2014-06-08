@@ -1,0 +1,45 @@
+* 0.7.4.3 -> 0.7.5
+  * Added a type to throw exceptions on cConfig
+  * Added isKey() to cConfig
+  * Completed documentation
+  * Removed cLog (you can get the exact behavior using a standard fstream
+  with "flush" at the end, which would be even more efficient)
+  * Removed deprecated gettok() (the new one seems to be working ok)
+  * added a reentrant version of gettok to avoid copies
+* 0.7.4.2 -> 0.7.4.3
+	* cConfig now throws an cConfigException when errlev is set to ERRLEV_EXCEPTION. You can get the msg as a string and get the type
+of exception using getMsg() and getType() respectively
+	* Added documentation
+  * Removed cLog (you can get the exact behavior using a standard fstream
+with "flush" at the end, which would be even more efficient)
+	* Removed deprecated gettok() (the new one seems to be working ok)
+* 0.7.4.1 -> 0.7.4.2
+  * bugfix: GetKeyValue() for strings didn't worked properly if the value on
+the file had spaces
+* 0.7.4 -> 0.7.4.1
+  * interface for cConfig changed: GetKeyValue takes references (both on'key_name' and on 'value').
+  * bugfix: gettok() didn't returned last token if there was no separator at the and and 'all_tokens' was set to true
+* 0.7.3 -> 0.7.4
+	* the values for boolean variables in a cConfig file are now "true" and "false" (not "1" and "0")
+	BE SURE TO UPDATE YOUR CFG's AS THEY WILL GET THE WRONG BOOLEAN VALUES OTHERWISE!
+	* Added templatized operator<<(string&, const T&): it allows a more confortable way of dealing with type conversion to string
+	* cConfig uses istringstreams to read formatted input (yay, no more ugly CStdLib calls)
+	* cLog now takes more types in GetKeyValue
+	* a strip() that can take a string instead of a char to strip was added
+	* gettok() now handles returning all tokens after (and including) the toknum'th token (if any)
+* 0.7.2 -> 0.7.3
+	* Removed the __USE_GNU_EXTENSIONS code. The library now uses an ordinary map (cConfig::StringMAP is the same as
+map<string, string>).
+* 0.7.1 -> 0.7.2
+	* fixed a bug in cLog when using << with a char*
+	* cLog class now works (it wasn't outputting anything to the file)
+	* fixed a broken compile when __USE_GNU_EXTENSIONS was defined
+* 0.7 -> 0.7.1
+	* Added an exposeData() const; member in cConfig that returns the internal MAP (a map<string,string> or
+hash_map<string,string,equal_func,hashing_func> depending on __USE_GNU_EXTENSIONS set or not) to allow client programs
+to manage the variable's map as they wish. It's recommended to use cConfig::MAP to allow compatibility.
+	* Changed default include's install directory from PREFIX/include to PREFIX/include/std_utils
+
+* 0.5 -> 0.7:
+	* Corrected a bug when stripping strings with length() == 1
+	* added the "cconfig" modules containing the cConfig class

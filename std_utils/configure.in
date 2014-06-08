@@ -1,0 +1,13 @@
+AC_INIT(configure.in)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(std_utils, 0.7.4.2)
+
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AC_PROG_RANLIB
+AM_PROG_LIBTOOL
+
+AC_TYPE_SIZE_T
+
+AC_OUTPUT(Makefile src/Makefile stdutil_test/Makefile)

@@ -1,0 +1,38 @@
+STD_UTIL library
+================
+	General classes/functions to complement the std namespace. Everything is declared under the
+std_utils namespace.
+
+Current documentation is available in the headers:
+* cconfig.h: configuration file parser
+* std_util.h: general utility functions
+
+general functions
+=================
+  You should read the API documentation for these, they are pretty simple and
+straightforward
+
+cConfig
+=======
+	This class parses configuration files that have either: blank lines, commented lines (with a '#')
+and key/value pairs. The pairs are declared as <keyname>=<keyvalue>. blank <keyvalue>'s are allowed.
+	The file is closed as soon as it parsed. All data gets loaded into a map. You can retrieve values with
+GetKeyValue(IN <keyname>,OUT <reference to variable to hold value>). If the reference is of type 
+bool-reference, the accepted values in the file are either true or false. If the 
+reference is of type (unsigned/signed)-(int/short)-reference, the accepted values are the 
+ones in the corresponding ranges for each type.
+If the pointer is of type string-reference (C++ STL string), any value is accepted and read 
+as a string. If the incorrect values are used for any given type the saved value is undefined.
+	The maximum line length for configuration files is determined by the CONF_MAX_LINE_LENGTH
+preprocessor constant defined by default in cconfig.h (default value 2048), this variable can
+be overriden.
+
+NOTE: the values are converted from string-to-<value> (when read from the .cfg files) using
+"stringstreams".
+		
+About the << operator
+=====================
+	The operator << (string&, const T&) is declared inside the std_util namespace (as everything
+else in this project). This forces you to write: "std_util::operator<<(str, elem);" (which
+is UGLY). You can work this around doing: "using std_util::operator<<;" at the top of your 
+file (obviously innecesary when you're already doing "using namespace std_util;").

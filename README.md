@@ -5,7 +5,7 @@ Derived off of :: libaiml :: by V01D
 ====================================
 
 This repository continues the work of the C++ AIML parser from V01D.
-It is based off of version
+It is based off of version 0.6 of libaiml.
 I also include the source of std_std_utils-0.7.5 in here to make it easier to compile the code
 
 ./configure --help  
