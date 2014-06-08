@@ -14,7 +14,7 @@ BUILD:
 ./rebuild.sh
 
 This script will do the following<br>
-  cd st_dutils/<br>
+  cd std_utils<br>
   ./configure <br>
   cd ..<br>
 <br>
@@ -25,4 +25,14 @@ This script will do the following<br>
 
 Note: --enable-javascript: JavaScript integration is broken at this moment but I intend to replace the previous integration of SpiderMonkey with googles v8 engine.<br>
 This should not only make the system faster but bring it also to the same level as NodeJS.
+
+RUN:
+====
+
+This should build std_util, libaiml, and the test_app.<p>
+
+cd test_app<br>
+cp libaiml.xml.dist libaiml.xml
+./test_app
+
 
