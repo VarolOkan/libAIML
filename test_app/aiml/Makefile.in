@@ -134,6 +134,9 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+V8_INCLUDE = @V8_INCLUDE@
+V8_LIB_PATH = @V8_LIB_PATH@
+V8_PATH = @V8_PATH@
 VERSION = @VERSION@
 WERROR_CXXFLAG = @WERROR_CXXFLAG@
 XML2_LIBS = @XML2_LIBS@
@@ -215,9 +218,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu test_app/aiml/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign test_app/aiml/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu test_app/aiml/Makefile
+	  $(AUTOMAKE) --foreign test_app/aiml/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

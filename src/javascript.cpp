@@ -28,6 +28,7 @@ using namespace aiml;
 
 /**  Interpreter Instance Data  **/
 #ifdef ENABLE_JAVASCRIPT
+/*
 cJavaScript::cJavaScriptInterpreter::cJavaScriptInterpreter(void) {
   JSClass global_class_template = {
     "global", 0,
@@ -52,30 +53,34 @@ JSBool cJavaScript::cJavaScriptInterpreter::Print(JSContext* cx, JSObject* obj, 
     retval += (i == 0 ? string("") : string(" ")) + string(JS_GetStringBytes(str), JS_GetStringLength(str));
   }
   return JS_TRUE;
-}  
+}
+*/
 #endif
 
 /** Initialization / Destruction **/
 cJavaScript::cJavaScript(void) {
 #ifdef ENABLE_JAVASCRIPT
-  interpreter = NULL;
+//  interpreter = NULL;
 #endif
 }
 
 cJavaScript::~cJavaScript(void) {
 #ifdef ENABLE_JAVASCRIPT
-  if (interpreter) {
+/*  if (interpreter) {
     if (interpreter->rt) JS_DestroyRuntime(interpreter->rt);
   }
   delete interpreter;
+*/
 #endif
 }
 
 bool cJavaScript::init(void) {
 #ifdef ENABLE_JAVASCRIPT
+/*
   interpreter = new cJavaScriptInterpreter;
   interpreter->rt = JS_NewRuntime(8L * 1024L * 1024L);
   if (!interpreter->rt) return false;
+*/
 #endif
   return true;
 }
@@ -84,24 +89,24 @@ bool cJavaScript::init(void) {
 bool cJavaScript::eval(const std::string& in, std::string& out) {
 #ifdef ENABLE_JAVASCRIPT
   bool success = true;
-
+/*
   // initialize context
   JSContext* cx = NULL;
   try {
     cx = JS_NewContext(interpreter->rt, 8192);
     if (!cx) return false;
-        
+
     JS_SetContextPrivate(cx, this);
     JS_SetErrorReporter(cx, &cJavaScriptInterpreter::ErrorReporter);
-        
+
     JSObject* global = JS_NewObject(cx, &interpreter->global_class, NULL, NULL);
     if (!global) throw string("no global object");
-        
+
     if (!JS_InitStandardClasses(cx, global)) throw string("couldn't init standard classes");
 
     if (!JS_DefineFunction(cx, global, "print", &cJavaScriptInterpreter::Print, 0, 0))
       throw string("couldn't init print() function");
-        
+
     // interpret script
     jsval retval;
     eval_result.clear();
@@ -123,7 +128,7 @@ bool cJavaScript::eval(const std::string& in, std::string& out) {
 
   // free stuff
   if (cx) JS_DestroyContext(cx);
-
+*/
   return success;
 #else
   runtime_error = "no JavaScript support";

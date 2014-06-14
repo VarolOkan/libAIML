@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: @PACKAGE@
 Description: AIML interpreter engine library.
 Version: @VERSION@
-Libs: -L${libdir} -Lstd_utils/src -lstd_utils @PCRECPP_LIBS@ @XML2_LIBS@
-Cflags: -I${includedir} -Istd_utils/src
+Libs: -L${libdir} -Lstd_utils/src -L@V8_LIB_PATH@ -lstd_utils @PCRECPP_LIBS@ @XML2_LIBS@
+Cflags: -I${includedir} -Istd_utils/src -I@V8_INCLUDE@

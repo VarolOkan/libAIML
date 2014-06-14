@@ -26,7 +26,7 @@
 #include "config.h"
 #ifdef ENABLE_JAVASCRIPT
 #define XP_UNIX
-#include <jsapi.h>
+#include <v8.h>
 #undef XP_UNIX
 #endif
 
@@ -36,30 +36,31 @@ namespace aiml {
     public:
       cJavaScript(void);
       ~cJavaScript(void);
-  
+
       bool init(void);
       bool eval(const std::string& in, std::string& out);
       const std::string& getRuntimeError(void);
-      
+
     private:
       #ifdef ENABLE_JAVASCRIPT
-      struct cJavaScriptInterpreter {
+/*      struct cJavaScriptInterpreter {
         cJavaScriptInterpreter(void);
 
         static void ErrorReporter(JSContext* cx, const char* message, JSErrorReport* report);
         static JSBool Print(JSContext* cx, JSObject* obj, uintN argc, jsval* argv, jsval* rval);
-  
+
         JSRuntime* rt;
         JSClass global_class;
       };
-      
+
       cJavaScriptInterpreter* interpreter;
+*/
       #endif
-      
+
       std::string runtime_error;
       std::string eval_result;
   };
-  
+
 }
 
 #endif // __LIBAIML_SUBENGINE_JAVASCRIPT_H__

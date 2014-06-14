@@ -1,5 +1,20 @@
-Suggestions for any other TODO items / IDEAS / how to resolve an unresolved and problematic
-TODO / how to optimize something, can be sent to me (check the README)
+TODO:
+
+1) Integrate current v8 under JavaScript
+2) aisl_parser
+3) Write utility app to:
+   - read in AIML and save to a caiml file
+   - read in AIML and save to a aisl file
+   - read in caiml and save to a AIML file
+   - read in aisl and save to a AIML file 
+     * Note: requires utility to handle out-of-AIML-spec-options
+4) Write utility to handle out-of-AIML-spec options of aisl
+   - handled through system tag.
+5) Write reference app for Linux and Android to handle run.X
+6) Write small php class to handle input output through a RESTful API
+
+---------------------------------------------------------------------
+
 
 Issues/Things to Consider
 =========================
@@ -30,7 +45,6 @@ XML:
   - check for xml:space handling in libxml
   - add validation support
 
-- try to ship with my own aiml set next time
 - AI::AIML showed that a template like <template>ok</template> could return
   'ok ', check why
 
@@ -60,12 +74,10 @@ AIML compiler: will allow compiling .aiml code into .caiml which can be loaded a
 
 IDEAS:
 =====
-	* Automatic learning could be using the system (and maybe javascript) tag: the bot could
-	write AIML data to a file and then learn it using <learn></learn>.
-		Of course, one could use a normal targeting approach by gossiping to a file (plain-text)
-	information about an input being match by the catch-all category (all * wildcards). And then
-	the botmaster would approve or deny this and use the learn feature with a user provided
-	AIML file.
-	
-  * Make a perl script that can parse XML test sets (Program D's?) and use the
-  perl interface to libaiml to validate the results
+  * Automatic learning could be using the system (and maybe javascript) tag: the bot could
+    write AIML data to a file and then learn it using <learn></learn>.
+    Of course, one could use a normal targeting approach by gossiping to a file (plain-text)
+    information about an input being match by the catch-all category (all * wildcards). And then
+    the botmaster would approve or deny this and use the learn feature with a user provided
+    AIML file.
+
