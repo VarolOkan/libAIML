@@ -1,7 +1,7 @@
 AIML
 =======
 
-libaiml by Varol Okan:
+libAIML by Varol Okan:
 =======================
 
 This repository continues the work of the C++ AIML parser from V01D.<br>
@@ -19,7 +19,7 @@ This script will do the following<br>
   cd ..<br>
 <br>
   autoreconf -i<br>
-  ./configure --enable-caiml --enable-pcrecpp<br>
+  ./configure --enable-caiml --enable-pcrecpp --enable-javascript --with-v8-path=/path/to/v8 <br>
   make<br>
 
 
@@ -44,7 +44,11 @@ quit
 JAVASCRIPT
 ==========
 
-JavaScript is handled natively through v8. Since JS is not well specified I added test_app/aiml/TestJavaScript file.
+JavaScript is handled natively through v8. <br>
+Please follow the instructions on https://developers.google.com/v8/build to build the libraries.<p>
+
+Since JS is not well specified in the AIML spec, I added test_app/aiml/TestJavaScript file to deonstrate how to use it with libAIML.<br>
+Note that the CDATA construct is required for libxml2 to properly read in the JS code.<p>
 
 Also please note that you will have access to the aiml - object in JavaScript. 
 ```JAVASCRIPT
