@@ -23,39 +23,18 @@
 #include "config.h"
 #include "global.h"
 
+#ifdef ENABLE_JAVASCRIPT
+#include <v8.h>
+using namespace v8;
+#endif
+
+#include "aiml.h"
+#include "user.h"
+#include "serializer.h"
+#include "graphmaster.h"
+
 using namespace std;
 using namespace aiml;
-
-/**  Interpreter Instance Data  **/
-#ifdef ENABLE_JAVASCRIPT
-/*
-cJavaScript::cJavaScriptInterpreter::cJavaScriptInterpreter(void) {
-  JSClass global_class_template = {
-    "global", 0,
-    JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_PropertyStub,
-    JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, JS_FinalizeStub
-  };
-  global_class = global_class_template;
-}
-
-void cJavaScript::cJavaScriptInterpreter::ErrorReporter(JSContext* cx, const char* message, JSErrorReport* report) {
-  ostringstream osstr;
-  osstr << report->lineno;
-  string& runtime_error = static_cast<cJavaScript*>(JS_GetContextPrivate(cx))->runtime_error;
-  if (runtime_error.empty()) runtime_error = string("JavaScript Error: ") + message + " (at line " + osstr.str() + ")";
-}
-
-JSBool cJavaScript::cJavaScriptInterpreter::Print(JSContext* cx, JSObject* obj, uintN argc, jsval* argv, jsval* rval) {
-  string& retval = static_cast<cJavaScript*>(JS_GetContextPrivate(cx))->eval_result;
-  for (uintN i = 0; i < argc; i++) {
-    JSString* str = JS_ValueToString(cx, argv[i]);
-    if (!str) return JS_FALSE;
-    retval += (i == 0 ? string("") : string(" ")) + string(JS_GetStringBytes(str), JS_GetStringLength(str));
-  }
-  return JS_TRUE;
-}
-*/
-#endif
 
 /** Initialization / Destruction **/
 cJavaScript::cJavaScript(void) {
@@ -66,77 +45,131 @@ cJavaScript::cJavaScript(void) {
 
 cJavaScript::~cJavaScript(void) {
 #ifdef ENABLE_JAVASCRIPT
-/*  if (interpreter) {
-    if (interpreter->rt) JS_DestroyRuntime(interpreter->rt);
-  }
-  delete interpreter;
-*/
+//  v8::V8::Dispose ( );
 #endif
 }
 
+// The callback that is invoked by v8 whenever the JavaScript 'print'
+// function is called.  Prints its arguments on stdout separated by
+// spaces and ending with a newline.
+#ifdef ENABLE_JAVASCRIPT
+void Print(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  bool first = true;
+  for (int i = 0; i < args.Length(); i++) {
+    v8::HandleScope handle_scope(args.GetIsolate());
+    if (first) {
+      first = false;
+    } else {
+      printf(" ");
+    }
+    v8::String::Utf8Value str(args[i]);
+    printf("%s", *str);
+  }
+  printf("\n");
+  fflush(stdout);
+}
+#endif
+
 bool cJavaScript::init(void) {
 #ifdef ENABLE_JAVASCRIPT
-/*
-  interpreter = new cJavaScriptInterpreter;
-  interpreter->rt = JS_NewRuntime(8L * 1024L * 1024L);
-  if (!interpreter->rt) return false;
-*/
+
+  V8::InitializeICU ( );
+  isolate = Isolate::New ( );
+
 #endif
   return true;
 }
 
+
 /** Evaluation **/
-bool cJavaScript::eval(const std::string& in, std::string& out) {
+bool cJavaScript::eval ( const std::string &in, std::string &out )  {
 #ifdef ENABLE_JAVASCRIPT
   bool success = true;
-/*
-  // initialize context
-  JSContext* cx = NULL;
+  m_strError = "";
+
+  Isolate::Scope isolate_scope ( isolate );
+
+  // Create a stack-allocated handle scope.
+  HandleScope handle_scope ( isolate );
+
+  // Create a template for the global object.
+  v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+  // Bind the global 'print' function to the C++ Print callback.
+  global->Set(v8::String::NewFromUtf8(isolate, "print"),
+              v8::FunctionTemplate::New(isolate, Print));
+
+  // Create a new context.
+  context = Context::New ( isolate, NULL, global );
+
+  // Enter the context for compiling and running the hello world script.
+  Context::Scope context_scope ( context );
+
+  std::string str = m_strAiml + in;
   try {
-    cx = JS_NewContext(interpreter->rt, 8192);
-    if (!cx) return false;
+    Handle<String> source = String::NewFromUtf8 ( isolate, str.c_str ( ) );
+    // Compile the source code.
+    Handle<Script> script = Script::Compile ( source );
 
-    JS_SetContextPrivate(cx, this);
-    JS_SetErrorReporter(cx, &cJavaScriptInterpreter::ErrorReporter);
+    // Run the script to get the result.
+    Handle<Value> result = script->Run ( );
 
-    JSObject* global = JS_NewObject(cx, &interpreter->global_class, NULL, NULL);
-    if (!global) throw string("no global object");
-
-    if (!JS_InitStandardClasses(cx, global)) throw string("couldn't init standard classes");
-
-    if (!JS_DefineFunction(cx, global, "print", &cJavaScriptInterpreter::Print, 0, 0))
-      throw string("couldn't init print() function");
-
-    // interpret script
-    jsval retval;
-    eval_result.clear();
-    if (JS_EvaluateScript(cx, global, in.c_str(), in.length(), "none", 0, &retval)) {
-      JSString* ret_jsstring = JS_ValueToString(cx, retval);
-      if (ret_jsstring) out = eval_result;
-      else throw string("couldn't get result as string");
-    }
-    else throw string("evaluation error");
+    // Convert the result to an UTF8 string and print it.
+    String::Utf8Value utf8 ( result );
+    m_strEval = *utf8;
+//    printf ( "result of %s =  %s\n", in.c_str ( ), str.c_str ( ) );
   }
-  catch(const std::string& msg) {
-    if (runtime_error.empty()) runtime_error = msg;
-    success = false;
-  }
-  catch(...) {
-    if (runtime_error.empty()) runtime_error = "unknown exception";
-    success = false;
+  catch (...)  {
+    m_strError = "Failed to compile";
   }
 
-  // free stuff
-  if (cx) JS_DestroyContext(cx);
-*/
   return success;
 #else
-  runtime_error = "no JavaScript support";
+  m_strError = "no JavaScript support";
   return false;
 #endif
 }
 
+void cJavaScript::set_variables ( const aiml::StarsHolder &sh, aiml::cUser &user )
+{
+  // Adding AIML objects to the JS interpreter environment
+  //
+  std::string name  = user.name;
+  std::string star  = ( sh.patt.size  ( ) > 0 ) ? *sh.patt.begin  ( ) : "";
+  std::string that  = ( sh.that.size  ( ) > 0 ) ? *sh.that.begin  ( ) : "";
+  std::string topic = ( sh.topic.size ( ) > 0 ) ? *sh.topic.begin ( ) : "";
+  const StringMAP map = user.getAllBotVars ( );
+
+  m_strAiml  = "aiml = { ";
+  m_strAiml += "  user : \"" + name  + "\", \n";
+  m_strAiml += "  star : \"" + star  + "\", \n";
+  m_strAiml += "  that : \"" + that  + "\", \n";
+  m_strAiml += "  topic: \"" + topic + "\", \n";
+  m_strAiml += "  bot  : { \n";
+  StringMAP::const_iterator it = map.begin ( );
+  while ( it != map.end ( ) )  {
+    m_strAiml += "    " + (*it).first + " : \"" + (*it).second + "\", ";
+    ++it;
+  }
+  m_strAiml += "  }\n";
+  m_strAiml += "};";
+
+/*
+p user
+$17 = (aiml::cUser &) @0xb05198: {
+  that_array = {std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0,
+    std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0},
+  input_array = {std::vector of length 1, capacity 1 = {"test ddddddddd"}, std::vector of length 0, capacity 0 <repeats 15 times>},
+  vars_map = std::map with 0 elements,
+  name = "localhost",
+  botvars_map = 0xa14a08,
+  graphmaster = 0xa14a38,
+  last_error = 0xa149d8
+}
+*/
+}
+
+
 const string& cJavaScript::getRuntimeError(void) {
-  return runtime_error;
+  return m_strError;
 }
 

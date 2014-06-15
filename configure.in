@@ -45,27 +45,41 @@ fi
 
 ## Library Checks ##
 V8_LIB_PATH=""
+V8_LIB_PATH2=""
 if test `uname -m` == "x86_64"; then
   V8_LIB_PATH="$with_v8_path/out/x64.release/obj.target/tools/gyp/"
+  V8_LIB_PATH2="$with_v8_path/out/x64.release/obj.target/third_party/icu/"
 else
   V8_LIB_PATH="$with_v8_path/out/ia32.release/obj.target/tools/gyp/"
+  V8_LIB_PATH2="$with_v8_path/out/ia32.release/obj.target/third_party/icu/"
 fi;
-AC_SUBST(V8_LIB_PATH,$V8_LIB_PATH)
-LDFLAGS="$LDFLAGS -L$V8_LIB_PATH"
+# AC_SUBST(V8_LIB_PATH,$V8_LIB_PATH)
 
+V8_LIBS=""
 if test "$enable_javascript" == "yes"
 then
+  V8_LIBS="  -lpthread -lrt -L$V8_LIB_PATH  -lv8_base -lv8_snapshot "
+  V8_LIBS+=" -L$V8_LIB_PATH2 -licuuc -licui18n -licudata "
+
   if test ! -f "$V8_LIB_PATH/libv8_base.a"; then
     AC_MSG_ERROR([library does NOT exist : "$V8_LIB_PATH/libv8_base.a" ])
   fi
   if test ! -f "$V8_LIB_PATH/libv8_snapshot.a"; then
     AC_MSG_ERROR([library does NOT exist : "$V8_LIB_PATH/libv8_snapshot.a" ])
   fi
-  if test ! -f "$V8_LIB_PATH/libv8_libbase.x64.a"; then
-    if test ! -f "$V8_LIB_PATH/libv8_libbase.ia32.a"; then
+  if test -f "$V8_LIB_PATH/libv8_libbase.x64.a"; then
+    V8_LIBS+=" -lv8_libbase.x64 "
+  else
+    if test -f "$V8_LIB_PATH/libv8_libbase.ia32.a"; then
+      V8_LIBS+=" -lv8_libbase.ia32 "
+    else
       AC_MSG_ERROR([library does NOT exist : "$V8_LIB_PATH/libv8_libbase.???.a" ])
     fi
   fi
+
+  LDFLAGS="$LDFLAGS $V8_LIBS"
+  AC_SUBST(LDFLAGS,$LDFLAGS)
+  AC_SUBST(V8_LIBS,$V8_LIBS)
 fi
 
 if test "$enable_pcrecpp" == "yes"; then

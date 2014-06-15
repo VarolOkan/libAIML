@@ -85,6 +85,14 @@ const StringMAP& cUser::getAllVars(void) const {
   return vars_map;
 }
 
+const StringMAP& cUser::getAllBotVars(void) const {
+  if ( botvars_map )
+    return *botvars_map;
+  
+  static const StringMAP dummy;
+  return dummy;
+}
+
 const string& cUser::getBotVar(const string& key) const {
   StringMAP::const_iterator it = botvars_map->find(key);
   if (it != botvars_map->end()) return (*it).second;

@@ -1,6 +1,6 @@
 /***************************************************************************
  *   This file is part of "libaiml"                                        *
- *   Copyright (C) 2005 by V01D                                            *
+ *   Copyright (C) 2014 by Varol Okan                                      *
  *                                                                         *
  *   "libaiml" is free software; you can redistribute it and/or modify     *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,43 +22,40 @@
 #define __LIBAIML_SUBENGINE_JAVASCRIPT_H__
 
 #include <string>
+#include <config.h>
 
-#include "config.h"
 #ifdef ENABLE_JAVASCRIPT
 #define XP_UNIX
 #include <v8.h>
 #undef XP_UNIX
 #endif
 
-namespace aiml {
+namespace aiml
+{
+  class StarsHolder;
+  class cUser;
 
-  class cJavaScript {
+  class cJavaScript
+  {
     public:
-      cJavaScript(void);
-      ~cJavaScript(void);
+       cJavaScript ( );
+      ~cJavaScript ( );
 
-      bool init(void);
-      bool eval(const std::string& in, std::string& out);
-      const std::string& getRuntimeError(void);
+    bool  init ( );
+    bool  eval ( const std::string &, std::string & );
+    void  set_variables ( const StarsHolder &, cUser & );
+    const std::string& getRuntimeError ( );
 
     private:
       #ifdef ENABLE_JAVASCRIPT
-/*      struct cJavaScriptInterpreter {
-        cJavaScriptInterpreter(void);
-
-        static void ErrorReporter(JSContext* cx, const char* message, JSErrorReport* report);
-        static JSBool Print(JSContext* cx, JSObject* obj, uintN argc, jsval* argv, jsval* rval);
-
-        JSRuntime* rt;
-        JSClass global_class;
-      };
-
-      cJavaScriptInterpreter* interpreter;
-*/
+      v8::Isolate *isolate;
+      v8::Handle<v8::ObjectTemplate> global;
+      v8::Handle<v8::Context> context;
       #endif
 
-      std::string runtime_error;
-      std::string eval_result;
+      std::string m_strError;
+      std::string m_strEval;
+      std::string m_strAiml; // AIML vars in JS
   };
 
 }

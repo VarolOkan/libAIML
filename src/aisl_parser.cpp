@@ -20,6 +20,9 @@
 
 #include <iostream>
 #include "core.h"
+
+#include "aisl_parser.h"
+
 using namespace std;
 using namespace aiml;
 

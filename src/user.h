@@ -44,7 +44,8 @@ namespace aiml {
       const std::string& getVar(const std::string& key) const;      /** ADD: default values **/
       const StringMAP& getAllVars(void) const;
       const std::string& getBotVar(const std::string& key) const;
-  
+      const StringMAP& getAllBotVars(void) const;
+
       const std::string& getInput(unsigned int idx1 = 1, unsigned int idx2 = 1) const;
       const std::string& getThat(bool for_matching = true, unsigned int which = 1, unsigned int sentence = 1) const;
       const std::string& getTopic(void) const;

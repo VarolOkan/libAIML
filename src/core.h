@@ -47,64 +47,64 @@ namespace aiml {
     public:
       cCore(void);
       ~cCore(void);
-  
+
       bool initialize(const std::string& filename);
       bool initialize(const std::string& filename, const cCoreOptions& opts);
       void deinitialize(void);
 
       void registerCallbacks(cInterpreterCallbacks* callbacks);
-  
+
       bool respond(const std::string& input, const std::string& username, std::string& output, std::list<cMatchLog>* log = NULL);
       void unregisterUser(const std::string& user_id);
-  
+
       bool learnFile(const std::string& filename);
-  
+
       bool saveGraphmaster(const std::string& file);
       bool loadGraphmaster(const std::string& file);
-  
+
       std::string getErrorStr(AIMLError error_num);
       std::string getRuntimeErrorStr(void);
-  
+
     private:
       friend class aiml::cGraphMaster;
       friend class aiml::cUserManager;
       friend class aiml::cConfigParser;
-      
+
       /** Error handling **/
       static std::string error_str[AIMLERR_MAX];
       void set_error(AIMLError);
-  
+
       /** Utility Functions **/
       bool load_aiml_files(void);
       bool learn_file(const std::string& filename, bool at_runtime = false);
-  
+
       bool doSystemCall(const std::string& cmd, std::string& ret);
-  
+
       /** java script **/
-      bool doJavaScriptCall(const std::string& cmd, std::string& ret);
+      bool doJavaScriptCall ( const std::string &, std::string &, const StarsHolder &, cUser & );
       cJavaScript javascript_interpreter;
-  
+
       const std::string& getBotVar(const std::string& key) const;
       StringMAP botvars_map;
-      
+
       /** Internal modules **/
       cGraphMaster graphmaster;
       AIMLparser aiml_parser;
       CAIMLparser caiml_parser;
-      
+
       /** Configuration options/vars **/
       cConfigParser cfg_parser;
       cCoreOptions cfg_options;
       std_util::cConfig cfg;
       bool applyConfigOptions(void);
-      
+
       std::ofstream file_gossip_stream;
-      
+
       /** User management **/
       cUserManager user_manager;
       typedef std::map<std::string,aiml::cUser> UserMap;
       UserMap user_map;
-      
+
       /** other **/
       bool initialized;
   };
