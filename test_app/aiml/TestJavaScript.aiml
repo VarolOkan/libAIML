@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<aiml>
+<!-- Free software &copy; 1995-2004 ALICE A.I. Foundation. -->
+<!-- This program is open source code released under -->
+<!-- the terms of the GNU General Public License     -->
+<!-- as published by the Free Software Foundation.   -->
+<!-- Complies with AIML 1.01 Tag Set Specification -->
+<!-- as adopted by the ALICE A.I. Foundation.  -->
+<!-- Annotated Version updated June 2004 -->
+
+
+<category>
+  <pattern>*</pattern>
+  <template>Hey do you have nothing better to do?</template>
+</category>
+
+<category>
+  <pattern>I *</pattern>
+  <template>
+    <random>
+      <li>Why?</li>
+      <li>Interesting gossip</li>
+      <li>That is interesting</li>
+    </random>.  
+    <think>
+      <srai>PUSH <person>YOU <star/></person></srai>
+    </think>
+  </template>
+</category>
+
+<category>
+  <pattern>YOU *</pattern>
+  <template>
+    <random>
+      <li>That's good information</li>
+      <li>Thanks for the information</li>
+    </random>.  
+    <think><srai>PUSH <person>YOU <star/></person></srai></think>
+  </template>
+</category>
+
+
+<category>
+  <pattern>TEST ME *</pattern>
+  <template>
+    This is cool <star/>.
+    <javascript><![CDATA[
+      print ( "   Testing JavaScript integration. Working !!!" );
+      var t;
+      for ( var t=0; t<10; t++ )  {
+        print ( "t=" + t );
+      }
+    ]]></javascript>
+  </template>
+</category>
+
+<category>
+  <pattern>TEST *</pattern>
+  <template>
+    This is cool <star/>.
+    <javascript><![CDATA[
+      print ( "   Testing JavaScript integration. Working !!! " + JSON.stringify ( aiml ) );
+      var t;
+      for ( var t=0; t<10; t++ )  {
+        print ( "t=" + t );
+      }
+    ]]></javascript>
+  </template>
+</category>
+
+<category>
+  <pattern>TEST AIML</pattern>
+  <template>
+    <javascript><![CDATA[
+      function objFields ( obj )  {
+        for ( var key in obj )  {
+         var val = obj[key];
+         print ( "  Key[" +key+ "] = " + val );
+        }
+      }
+      print ( "------------------ aiml - object ------------------" );
+      objFields ( aiml );
+      print ( "------------------ aiml.bot ------------------" );
+      objFields ( aiml.bot );
+    ]]></javascript>
+  </template>
+</category>
+
+</aiml>
+
