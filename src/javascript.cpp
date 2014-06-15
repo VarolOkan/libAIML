@@ -109,14 +109,19 @@ bool cJavaScript::eval ( const std::string &in, std::string &out )  {
     Handle<String> source = String::NewFromUtf8 ( isolate, str.c_str ( ) );
     // Compile the source code.
     Handle<Script> script = Script::Compile ( source );
+    if ( script.IsEmpty ( ) )  {
+      m_strError = "JavaScript Compilation error.";
+    }
+    else  {
+      // Run the script to get the result.
+      Handle<Value> result = script->Run ( );
 
-    // Run the script to get the result.
-    Handle<Value> result = script->Run ( );
-
-    // Convert the result to an UTF8 string and print it.
-    String::Utf8Value utf8 ( result );
-    m_strEval = *utf8;
+      // Convert the result to an UTF8 string and print it.
+      String::Utf8Value utf8 ( result );
+      m_strEval = *utf8;
+      success = true;
 //    printf ( "result of %s =  %s\n", in.c_str ( ), str.c_str ( ) );
+    }
   }
   catch (...)  {
     m_strError = "Failed to compile";
