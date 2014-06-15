@@ -120,7 +120,7 @@ bool cJavaScript::eval ( const std::string &in, std::string &out )  {
       String::Utf8Value utf8 ( result );
       m_strEval = *utf8;
       success = true;
-//    printf ( "result of %s =  %s\n", in.c_str ( ), str.c_str ( ) );
+      // printf ( "result of %s =  %s\n", in.c_str ( ), str.c_str ( ) );
     }
   }
   catch (...)  {
@@ -157,20 +157,6 @@ void cJavaScript::set_variables ( const aiml::StarsHolder &sh, aiml::cUser &user
   }
   m_strAiml += "  }\n";
   m_strAiml += "};";
-
-/*
-p user
-$17 = (aiml::cUser &) @0xb05198: {
-  that_array = {std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0,
-    std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0, std::vector of length 0, capacity 0},
-  input_array = {std::vector of length 1, capacity 1 = {"test ddddddddd"}, std::vector of length 0, capacity 0 <repeats 15 times>},
-  vars_map = std::map with 0 elements,
-  name = "localhost",
-  botvars_map = 0xa14a08,
-  graphmaster = 0xa14a38,
-  last_error = 0xa149d8
-}
-*/
 }
 
 
