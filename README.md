@@ -62,7 +62,7 @@ You: test something
 or
 You: test aiml
 
-'''xml
+```xml
 <category>
   <pattern>TEST *</pattern>
   <template>
@@ -94,5 +94,5 @@ You: test aiml
     ]]></javascript>
   </template>
 </category>
-'''
+```
 
