@@ -47,6 +47,7 @@ JAVASCRIPT
 JavaScript is handled natively through v8. Since JS is not well specified I added test_app/aiml/TestJavaScript file.
 
 Also please note that you will have access to the aiml - object in JavaScript. 
+```JAVASCRIPT
   var aiml = { 
     user : "name",
     star : "star",
@@ -56,11 +57,12 @@ Also please note that you will have access to the aiml - object in JavaScript.
       someBotVars ...
     }
   }
+```
 
-to test the JS categories you can enter 
-You: test something
-or
-You: test aiml
+to test the JS categories you can enter <br>
+You: test something<br>
+or<br>
+You: test aiml<p>
 
 ```xml
 <category>
