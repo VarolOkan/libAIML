@@ -23,10 +23,7 @@ This script will do the following<br>
   make<br>
 
 
-Note: --enable-javascript: JavaScript integration is broken at this moment but I intend to replace the previous integration of SpiderMonkey with googles v8 engine.<br>
-This should not only make the system faster but bring it also to the same level as NodeJS.
-
-Note: --enable-javascript: Youneed to make sure that the library files are either in the search path ( I.e. ise LDFLAGS, and LIBS ) or you can specify the path to v8's top source directory with --with-v8-path=/path/to/v8/
+Note: --enable-javascript: You need to make sure that the library files are either in the search path ( I.e. ise LDFLAGS, and LIBS ) or you can specify the path to v8's top source directory with --with-v8-path=/path/to/v8/
 Please let me know if you run into issues with the libs. You can modify configure.in and run autoconf afterwards and try again ./configure ...
 
 
@@ -42,4 +39,60 @@ cp libaiml.xml.dist libaiml.xml<br>
 Once you have grown tired of chatting you can simply type
 
 quit
+
+
+JAVASCRIPT
+==========
+
+JavaScript is handled natively through v8. Since JS is not well specified I added test_app/aiml/TestJavaScript file.
+
+Also please note that you will have access to the aiml - object in JavaScript. 
+  var aiml = { 
+    user : "name",
+    star : "star",
+    that : "that",
+    topic: "topic",
+    bot  : {
+      someBotVars ...
+    }
+  }
+
+to test the JS categories you can enter 
+You: test something
+or
+You: test aiml
+
+'''xml
+<category>
+  <pattern>TEST *</pattern>
+  <template>
+    This is cool <star/>.
+    <javascript><![CDATA[
+      print ( "   Testing JavaScript integration. Working !!! " + JSON.stringify ( aiml ) );
+      var t;
+      for ( var t=0; t<10; t++ )  {
+        print ( "t=" + t );
+      }
+    ]]></javascript>
+  </template>
+</category>
+
+<category>
+  <pattern>TEST AIML</pattern>
+  <template>
+    <javascript><![CDATA[
+      function objFields ( obj )  {
+        for ( var key in obj )  {
+         var val = obj[key];
+         print ( "  Key[" +key+ "] = " + val );
+        }
+      }
+      print ( "------------------ aiml - object ------------------" );
+      objFields ( aiml );
+      print ( "------------------ aiml.bot ------------------" );
+      objFields ( aiml.bot );
+    ]]></javascript>
+  </template>
+</category>
+'''
 
