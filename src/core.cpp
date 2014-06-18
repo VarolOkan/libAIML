@@ -32,7 +32,9 @@ using std_util::operator<<;
 
 cCore::cCore(void) :
           graphmaster(file_gossip_stream, last_error, *this),
-          aiml_parser(graphmaster, last_error), caiml_parser(graphmaster, last_error),
+          aiml_parser(graphmaster, last_error),
+          aisl_parser(graphmaster, last_error),
+          caiml_parser(graphmaster, last_error),
           cfg_parser(*this),
           cfg(std_util::cConfig::ERRLEV_QUIET), user_manager(*this), initialized(false)
 { }
@@ -193,7 +195,7 @@ bool cCore::load_aiml_files(void) {
   // load matching files
   for (list<string>::const_iterator it = matching_files.begin(); it != matching_files.end(); it++) {
     if (!learn_file(*it)) return false;
-    else { if (callbacks) callbacks->onAimlLoad(*it); }
+    else { if (callbacks) callbacks->onLoad(*it); }
   }
   return true;
 }

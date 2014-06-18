@@ -71,7 +71,7 @@ then
     V8_LIBS+=" -lv8_libbase.x64 "
   else
     if test -f "$V8_LIB_PATH/libv8_libbase.a"; then
-      V8_LIBS+=" -lv8_libbase "
+      V8_LIBS+=" -lv8_libbase.ia32 "
     else
       AC_MSG_ERROR([library does NOT exist : "$V8_LIB_PATH/libv8_libbase.???.a" ])
     fi
@@ -123,4 +123,4 @@ else
   echo "NO";
 fi
 
-AC_OUTPUT(Makefile src/Makefile test_app/aiml/Makefile test_app/Makefile libaiml.pc)
+AC_OUTPUT(Makefile src/Makefile test_app/aiml/Makefile test_app/Makefile util/Makefile libaiml.pc)

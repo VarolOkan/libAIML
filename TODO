@@ -1,17 +1,16 @@
 TODO:
 
-1) Integrate current v8 under JavaScript
-2) aisl_parser
-3) Write utility app to:
-   - read in AIML and save to a caiml file
-   - read in AIML and save to a aisl file
-   - read in caiml and save to a AIML file
-   - read in aisl and save to a AIML file 
-     * Note: requires utility to handle out-of-AIML-spec-options
-4) Write utility to handle out-of-AIML-spec options of aisl
-   - handled through system tag.
-5) Write reference app for Linux and Android to handle run.X
-6) Write small php class to handle input output through a RESTful API
+ aisl_parser
+ Write utility app to:
+ - read in AIML and save to a caiml file
+ - read in AIML and save to a aisl file
+ - read in caiml and save to a AIML file
+ - read in aisl and save to a AIML file 
+   * Note: requires utility to handle out-of-AIML-spec-options
+ Write utility to handle out-of-AIML-spec options of aisl
+ - handled through system tag.
+ Write reference app for Linux and Android to handle run.X
+ Write small php class to handle input output through a RESTful API
 
 ---------------------------------------------------------------------
 
@@ -40,31 +39,14 @@ XML:
     the interpreter (because <li> is parsed as aiml: when it should be noted
     that such li's are html:). Fix that.
     
-  - check for XML specs about casing of tags/parameters. should they be case
-  insensitive?
+  - check for XML specs about casing of tags/parameters. should they be case insensitive?
   - check for xml:space handling in libxml
   - add validation support
-
-- AI::AIML showed that a template like <template>ok</template> could return
-  'ok ', check why
-
-- libxml: there are some util functions like hasProp getProp that should be used
 
 General:
   - allow # of that/input's saved to be settable at runtime (array -> vector)
   - Add options to the .conf file to let the user decide how to handle unclear
   or undefined situations of the AIML spec
-
-JavaScript:
-  - consider a way of defining some script to execute inside the general context
-  at startup (to define functions, classes, open persistent databse connections and such)
-  |_ conflicts with making each tag its own context, maybe it would be better
-  to look into global classes or something like that
-
-Reaching 1.0
-============
-- Do some profiling to find bottlenecks
-- Optimizations
 
 Side Programs
 =============

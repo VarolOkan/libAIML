@@ -29,6 +29,18 @@ using namespace aiml;
 using std_util::strip;
 
 /** handlers **/
+/** SAX2 callback when an element start has been detected by the parser. It provides the namespace
+                     informations for the element, as well as the new namespace declarations on the element.
+      ctx:           the user data (XML parser context)
+      localname:     the local name of the element
+      prefix:        the element namespace prefix if available
+      URI:           the element namespace name if available
+      nb_namespaces: number of namespace definitions on that node
+      namespaces:    pointer to the array of prefix/URI pairs namespace definitions
+      nb_attributes: the number of attributes on that node
+      nb_defaulted:  the number of defaulted attributes. The defaulted ones are at the end of the array
+      attributes:    pointer to the array of (localname/prefix/URI/value/end) attribute values.
+*/
 namespace aiml {
   void startElementHandler(void* ctx, const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI,
     int nb_namespaces, const xmlChar** namespaces, int nb_attributes, int nb_defaulted, const xmlChar** attr)
@@ -61,20 +73,20 @@ AIMLparser::~AIMLparser(void) { }
  */
 bool AIMLparser::parse(const std::string& filename, bool _trim_blanks, bool at_runtime) {
   // init vars
-  trim_blanks = _trim_blanks;
-  insert_ordered = at_runtime;
-  verbatim = false;
-  level = LEVEL_OTHER;
+  trim_blanks      = _trim_blanks;
+  insert_ordered   = at_runtime;
+  verbatim         = false;
+  level            = LEVEL_OTHER;
   last_char_offset = -1;
-  ignore_chardata = false;
-  inside_blanks = false;
-  binary_pos = 0;
-  offset_stack = stack<size_t>();
+  ignore_chardata  = false;
+  inside_blanks    = false;
+  binary_pos       = 0;
+  offset_stack     = stack<size_t>();
   runtime_error.clear();
 
   // set handlers again
   xmlSAXHandler xml_handler;
-  memset(&xml_handler, 0, sizeof(xmlSAXHandler));
+  memset ( &xml_handler, 0, sizeof ( xmlSAXHandler ) );
   xml_handler.startElementNs  = aiml::startElementHandler;
   xml_handler.endElementNs    = aiml::endElementHandler;
   xml_handler.characters      = aiml::characterDataHandler;
@@ -92,7 +104,7 @@ bool AIMLparser::parse(const std::string& filename, bool _trim_blanks, bool at_r
     else runtime_error = "couldn't get a parsing context";
     return false;
   }
-  
+
   xmlSAXHandlerPtr old_sax = xml_context->sax;
   xml_context->sax = &xml_handler;
   xml_context->userData = this;
@@ -330,17 +342,22 @@ void AIMLparser::startElement(const std::string& name, const list<string>& attr_
     }
 
     /*** other ***/
-    else if (name == "uppercase") { binary_pos += templ.writeNumber(TEMPL_UPPERCASE); }
-    else if (name == "lowercase") { binary_pos += templ.writeNumber(TEMPL_LOWERCASE); }
-    else if (name == "formal") { binary_pos += templ.writeNumber(TEMPL_FORMAL); }
-    else if (name == "sentence") { binary_pos += templ.writeNumber(TEMPL_SENTENCE); }
-    else if (name == "random") { ignore_chardata = true; binary_pos += templ.writeNumber(TEMPL_RANDOM); }
-    else if (name == "gossip") { binary_pos += templ.writeNumber(TEMPL_GOSSIP); }
-    else if (name == "srai") { binary_pos += templ.writeNumber(TEMPL_SRAI); }
-    else if (name == "think") { binary_pos += templ.writeNumber(TEMPL_THINK); }
-    else if (name == "learn") { binary_pos += templ.writeNumber(TEMPL_LEARN); }
-    else if (name == "system") { binary_pos += templ.writeNumber(TEMPL_SYSTEM); verbatim = true; }
-    else if (name == "javascript") { binary_pos += templ.writeNumber(TEMPL_JAVASCRIPT); verbatim = true; }
+    else if (name == "uppercase")  { binary_pos += templ.writeNumber(TEMPL_UPPERCASE); }
+    else if (name == "lowercase")  { binary_pos += templ.writeNumber(TEMPL_LOWERCASE); }
+    else if (name == "formal")     { binary_pos += templ.writeNumber(TEMPL_FORMAL); }
+    else if (name == "sentence")   { binary_pos += templ.writeNumber(TEMPL_SENTENCE); }
+    else if (name == "random")     { ignore_chardata = true; binary_pos += templ.writeNumber(TEMPL_RANDOM); }
+    else if (name == "gossip")     { binary_pos += templ.writeNumber(TEMPL_GOSSIP); }
+    else if (name == "srai")       { binary_pos += templ.writeNumber(TEMPL_SRAI); }
+    else if (name == "think")      { binary_pos += templ.writeNumber(TEMPL_THINK); }
+    else if (name == "learn")      { binary_pos += templ.writeNumber(TEMPL_LEARN); }
+    else if (name == "system")     { binary_pos += templ.writeNumber(TEMPL_SYSTEM); verbatim = true; }
+    else if (name == "javascript") {
+      //xml_context->disableSAX = 1; //ignore_chardata = true;
+      xml_context->instate = XML_PARSER_CDATA_SECTION;
+      binary_pos += templ.writeNumber(TEMPL_JAVASCRIPT);
+      verbatim = true;
+    }
 
     /*** Possible shortcuts: for now they aren't, if they are shortcuts this ids will be changed later ***/
     else if (name == "person") { binary_pos += templ.writeNumber(TEMPL_PERSON); }
@@ -401,7 +418,11 @@ void AIMLparser::endElement(const std::string& name) {
       level = LEVEL_OTHER;
     }
     else {
-      if (name == "system" || name == "javascript") verbatim = false;
+      if (name == "system" || name == "javascript") {
+        //xml_context->disableSAX = 0;
+        xml_context->instate = XML_PARSER_CONTENT;
+        verbatim = false;
+      }
       else if (name == "condition" || name == "random") ignore_chardata = false;
       else if (name == "li") ignore_chardata = true;
 

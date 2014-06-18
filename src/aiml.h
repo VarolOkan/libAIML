@@ -69,7 +69,7 @@ namespace aiml {
        * This function is called during initialization, for each aiml file that is loaded.
        * \param filename is the full path to the aiml file just loaded.
        */
-      virtual void onAimlLoad(const std::string& filename) = 0;
+      virtual void onLoad(const std::string& filename) = 0;
   };
 
   /**

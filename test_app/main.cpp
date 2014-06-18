@@ -30,7 +30,7 @@ using namespace aiml;
 
 class cTestAppCallbacks : public cInterpreterCallbacks {
   public:
-    void onAimlLoad(const std::string& filename) {
+    void onLoad(const std::string& filename) {
       cout << "Loaded " << filename << endl;
     }
 };
@@ -39,15 +39,15 @@ int main(int argc, char* argv[]) {
   cInterpreter* interpreter = cInterpreter::newInterpreter();
 
   int ret = 0;
-  
+
   // exceptions are used because returning in the middle of the program wouldn't let 'interpreter' be freed
   try {
     cTestAppCallbacks myCallbacks;
     interpreter->registerCallbacks(&myCallbacks);
-    
+
     cout << "Initializing interpreter..." << endl;
     if (!interpreter->initialize("libaiml.xml")) throw 1;
-    
+
     string line;
     cout << "Type \"quit\" to... guess..." << endl;
 
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
     while (getline(cin, line)) {
       if (strip(line).empty()) { cout << "You: " << flush; continue; }
       if (line == "quit") break;
-      
+
       /** remove the last parameter to avoid logging the match **/
       if (!interpreter->respond(line, "localhost", result, &log)) throw 3;
 
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
       }
       cout << "You: " << flush;
     }
-  
+
     /** Uncomment this line out and you'll see that the bot will no longer remember user vars **/
     //interpreter->unregisterUser("localhost");
   }

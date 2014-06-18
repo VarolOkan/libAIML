@@ -47,7 +47,7 @@ JAVASCRIPT
 JavaScript is handled natively through v8. <br>
 Please follow the instructions on https://developers.google.com/v8/build to build the libraries.<p>
 
-Since JS is not well specified in the AIML spec, I added test_app/aiml/TestJavaScript file to deonstrate how to use it with libAIML.<br>
+Since JS is not well specified in the AIML spec, I added test_app/aiml/TestJavaScript.aiml file to deonstrate how to use it with libAIML.<br>
 Note that the CDATA construct is required for libxml2 to properly read in the JS code.<p>
 
 Also please note that you will have access to the aiml - object in JavaScript. 
