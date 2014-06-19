@@ -14,6 +14,9 @@ AC_ARG_WITH(v8_path,AS_HELP_STRING([--with-v8-path=/path/to/v8/],[root of v8 sou
 AC_ARG_ENABLE(caiml,
   AC_HELP_STRING([--enable-caiml],[Enable CAIML writer/reader (see README)]),
   AC_DEFINE([ENABLE_CAIML], [1], [Enable compilation of CAIML writer/reader]))
+AC_ARG_ENABLE(aisl,
+  AC_HELP_STRING([--enable-aisl],[Enable AISL writer/reader (see README)]),
+  AC_DEFINE([ENABLE_AISL], [1], [Enable compilation of AISL writer/reader]))
 AC_ARG_ENABLE(javascript,
   AC_HELP_STRING([--enable-javascript],[Enable JavaScript API integration (see README)]),
   AC_DEFINE([ENABLE_JAVASCRIPT], [1], [Enable JavaScript API integration]))

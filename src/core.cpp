@@ -76,6 +76,34 @@ bool cCore::learnFile(const std::string& filename) {
   return learn_file(filename, true);
 }
 
+bool cCore::loadFileType ( const std::string &filename, enType type )  {
+  switch ( type )  {
+#ifdef ENABLE_CAIML
+    case TYPE_CAIML: return caiml_parser.load ( filename );
+#endif
+#ifdef ENABLE_CAIML
+    case TYPE_AISL:  return aisl_parser.load  ( filename );
+#endif
+    case TYPE_AIML:
+    default: return aiml_parser.parse ( filename, false, false ); //cfg_options.should_trim_blanks, at_runtime);
+  }
+  return false;
+}
+
+bool cCore::saveFileType ( const std::string &filename, enType type )  {
+  switch ( type )  {
+#ifdef ENABLE_CAIML
+    case TYPE_CAIML: return caiml_parser.save ( filename );
+#endif
+#ifdef ENABLE_AISL
+    case TYPE_AISL:  return aisl_parser.save  ( filename );
+#endif
+    case TYPE_AIML:
+    default: return aiml_parser.save ( filename );
+  }
+  return false;
+}
+
 bool cCore::saveGraphmaster(const std::string& file) {
 #ifdef ENABLE_CAIML
   if (!initialized) { set_error(AIMLERR_NOT_INIT); return false; }

@@ -124,6 +124,11 @@ bool AIMLparser::parse(const std::string& filename, bool _trim_blanks, bool at_r
   return ret;
 }
 
+bool AIMLparser::save ( const std::string &filename )
+{
+  return false;
+}
+
 std::string AIMLparser::getRuntimeError(void) {
   return runtime_error;
 }

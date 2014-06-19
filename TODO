@@ -1,11 +1,6 @@
 TODO:
 
- aisl_parser
- Write utility app to:
- - read in AIML and save to a caiml file
- - read in AIML and save to a aisl file
- - read in caiml and save to a AIML file
- - read in aisl and save to a AIML file 
+ - read in aisl and save to a AIML file
    * Note: requires utility to handle out-of-AIML-spec-options
  Write utility to handle out-of-AIML-spec options of aisl
  - handled through system tag.
@@ -17,6 +12,8 @@ TODO:
 
 Issues/Things to Consider
 =========================
+- Handle JS tag wo CDATA.
+
 - if getAnswer() is false inside respond() the input vector will be filled
 with unanswered inputs
 
@@ -38,7 +35,7 @@ XML:
     |_ there are incorrect .aiml's that use <li> inside <ul>, which confuses
     the interpreter (because <li> is parsed as aiml: when it should be noted
     that such li's are html:). Fix that.
-    
+
   - check for XML specs about casing of tags/parameters. should they be case insensitive?
   - check for xml:space handling in libxml
   - add validation support

@@ -58,10 +58,13 @@ namespace aiml {
       bool respond(const std::string& input, const std::string& username, std::string& output, std::list<cMatchLog>* log = NULL);
       void unregisterUser(const std::string& user_id);
 
-      bool learnFile(const std::string& filename);
+      bool learnFile ( const std::string& filename);
 
-      bool saveGraphmaster(const std::string& file);
-      bool loadGraphmaster(const std::string& file);
+      bool loadFileType ( const std::string &, enType );
+      bool saveFileType ( const std::string &, enType );
+
+      bool saveGraphmaster ( const std::string & );
+      bool loadGraphmaster ( const std::string & );
 
       std::string getErrorStr(AIMLError error_num);
       std::string getRuntimeErrorStr(void);

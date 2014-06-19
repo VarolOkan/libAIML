@@ -45,7 +45,7 @@ namespace aiml {
      * Refer to the configuration file description to see which are those defaults.
      */
     cCoreOptions(void);
-    
+
     std::string file_patterns;    /**< Space separated list of patterns of aiml files to be loaded. */
     std::string file_gossip;      /**< The path where to gossip (a file). */
     std::string user_file;        /**< File where user's data is saved. */
@@ -78,6 +78,7 @@ namespace aiml {
    */
   class cInterpreter {
     public:
+      enum enType { TYPE_AIML, TYPE_CAIML, TYPE_AISL };
       /** Initializes everything. */
       cInterpreter(void);
 
@@ -137,6 +138,22 @@ namespace aiml {
       virtual bool learnFile(const std::string& filename) = 0;
 
       /**
+       * loads an file into the graphmaster.
+       * \param filename is the path (relative to client program) of the aiml file to load.
+       * \param type can be any of TYPE_AIML, TYPE_AISL, or TYPE_CAIML
+       * \returns if it was successful.
+       */
+      virtual bool loadFileType ( const std::string &, enType ) = 0;
+
+      /**
+       * saves the graphmaster to a file
+       * \param filename is the path (relative to client program) of the aiml file to save.
+       * \param type can be any of TYPE_AIML, TYPE_AISL, or TYPE_CAIML
+       * \returns if it was successful.
+       */
+      virtual bool saveFileType ( const std::string &, enType ) = 0;
+
+      /**
        * Saves currently loaded graphmaster into a .caiml file.
        * \param file is the name of the file.
        * \returns if saving was succesful.
@@ -183,7 +200,7 @@ namespace aiml {
        * is just defined for simmetry.
        */
       static void freeInterpreter(cInterpreter* i);
-  
+
     protected:
       AIMLError last_error;
       cInterpreterCallbacks* callbacks;

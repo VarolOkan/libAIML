@@ -38,30 +38,31 @@ namespace aiml {
     TEMPL_PERSON_SHORT, TEMPL_PERSON2_SHORT, TEMPL_GENDER_SHORT,
     TEMPL_UNKNOWN
   };
-  
+
   enum BinTemplCondType {
     TEMPL_CONDITION_SINGLE, TEMPL_CONDITION_MULTI, TEMPL_CONDITION_BLOCK
   };
-  
+
   enum BinTemplLiType {
     TEMPL_LI_NAME_VALUE, TEMPL_LI_VALUE, TEMPL_LI_DEFAULT
   };
 
   class AIMLparser {
     public:
-      AIMLparser(cGraphMaster& graphmaster, aiml::AIMLError& errnum);
-      ~AIMLparser(void);
-      
-      bool parse(const std::string& filename, bool trim_blanks, bool at_runtime);
-      std::string getRuntimeError(void);
-      
+       AIMLparser ( cGraphMaster &, aiml::AIMLError & );
+      ~AIMLparser ( void);
+
+      bool parse  ( const std::string &, bool trim_blanks, bool at_runtime);
+      bool save   ( const std::string & );
+      std::string getRuntimeError ( void );
+
     private:
       cGraphMaster& graphmaster;
-      
+
       aiml::AIMLError& errnum;
       void set_error(aiml::AIMLError _errnum);
       std::string runtime_error;
-  
+
       void close(void);
 
       friend void startElementHandler(void* ctx, const xmlChar* localname, const xmlChar* prefix, const xmlChar* URI,
@@ -71,31 +72,31 @@ namespace aiml {
       friend void endElementHandlerOld(void* ctx, const xmlChar* name);
       friend void characterDataHandler(void* ctx, const xmlChar* s, int len);
       friend void errorHandler(void* ctx, const char* msg, ...);
-    
+
       void startElement(const std::string& name, const std::list<std::string>& attr_list);
       void endElement(const std::string& name);
       void characters(const std::string& text, int len);
       void onError(void);
-      
+
       std::string topic, that, patt;
       cWriteBuffer templ;
-  
+
       void trim_multiple_blanks(const std::string& text, std::string& templ, int len);
       int last_char_offset;
       bool inside_blanks;
       bool ignore_chardata;
       bool trim_blanks;
-  
+
       enum PARSING_LEVEL { LEVEL_OTHER, LEVEL_INSIDE_PATTERN, LEVEL_INSIDE_TEMPLATE, LEVEL_INSIDE_THAT };
       PARSING_LEVEL level;
-      
+
       xmlParserCtxtPtr xml_context;
       bool insert_ordered;
       bool verbatim;
 
       bool inside_random;
       std::stack<size_t> li_count_stack;
-      
+
       std::stack<size_t> offset_stack;
       size_t binary_pos;
   };

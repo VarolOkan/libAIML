@@ -54,16 +54,27 @@ int main ( int argc, char* argv[] )
     cTestAppCallbacks cb;
     pInterpreter->registerCallbacks ( &cb );
 
+/*
     cCoreOptions options;
     options.allow_system     = true;
     options.allow_javascript = true;
     options.file_patterns    = parser.input ( );
 
+    AIMLError last_error;
+    std::ofstream file_gossip_stream;
+
+    cGraphMaster graphmaster ( file_gossip_stream, last_error, *this);
+    aiml_parser ( graphmaster, last_error );
+    aisl_parser ( graphmaster, last_error );
+    caiml_parser( graphmaster, last_error );
+
+    bool ret = aiml_parser.parse ( parser.input ( ), false, false );
+*/
     cout << "Initializing interpreter..." << endl;
-    if ( ! pInterpreter->initialize ( options ) )
+    if ( ! pInterpreter->loadFileType ( parser.input ( ), cInterpreter::TYPE_AIML ) ) //options ) )
       throw 1;
 
-    if ( ! pInterpreter->saveGraphmaster ( parser.output ( ) ) )
+    if ( ! pInterpreter->saveFileType ( parser.output ( ), cInterpreter::TYPE_CAIML ) )
       throw 1;
 
   }
