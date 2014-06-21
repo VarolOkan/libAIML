@@ -71,10 +71,25 @@ int main ( int argc, char* argv[] )
     bool ret = aiml_parser.parse ( parser.input ( ), false, false );
 */
     cout << "Initializing interpreter..." << endl;
-    if ( ! pInterpreter->loadFileType ( parser.input ( ), cInterpreter::TYPE_AIML ) ) //options ) )
+    cInterpreter::enType fromType = cInterpreter::TYPE_AIML;
+    cInterpreter::enType toType   = cInterpreter::TYPE_CAIML;
+    if ( parser.fromType ( ) == "caiml" )  {
+      fromType = cInterpreter::TYPE_CAIML;
+    }
+    else if ( parser.fromType ( ) == "aisl" )  {
+      fromType = cInterpreter::TYPE_AISL;
+    }
+    if ( parser.toType ( ) == "aiml" )  {
+      toType = cInterpreter::TYPE_AIML;
+    }
+    else if ( parser.toType ( ) == "aisl" )  {
+      toType = cInterpreter::TYPE_AISL;
+    }
+
+    if ( ! pInterpreter->loadFileType ( parser.input ( ), fromType ) )
       throw 1;
 
-    if ( ! pInterpreter->saveFileType ( parser.output ( ), cInterpreter::TYPE_CAIML ) )
+    if ( ! pInterpreter->saveFileType ( parser.output ( ), toType ) )
       throw 1;
 
   }

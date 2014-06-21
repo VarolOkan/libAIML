@@ -22,9 +22,10 @@ public:
   virtual ~Parser ( );
 
   bool parseCommandLine ( int, char ** );
-  std::string &input  ( );
-  std::string &output ( );
-  std::string &type   ( );
+  std::string &input    ( );
+  std::string &output   ( );
+  std::string &toType   ( );
+  std::string &fromType ( );
 
 protected:
   void printHelp ( );
@@ -33,6 +34,7 @@ private:
   std::string m_strInputName;
   std::string m_strOutputName;
   std::string m_strToType;
+  std::string m_strFromType;
   int m_iLogLevel;
 };
 
