@@ -143,7 +143,8 @@ bool AISLparser::save ( const std::string &filename )
 //  if (!writeNumber(file, version) || !writeNumber(file, graphmaster.getSize())) { return false; }
 
   // data
-  if ( ! writeChilds ( file, graphmaster.getRoot ( ), NodeVec ( ) ) )
+  m_path.resize ( 10 );
+  if ( ! writeChilds ( file, graphmaster.getRoot ( ), NodeVec ( ), -1 ) )
     return false;
 
   file << endl << endl;
@@ -152,13 +153,119 @@ bool AISLparser::save ( const std::string &filename )
   return true;
 }
 
-bool AISLparser::writeChilds ( ofstream &file, const NodeVec &same_childs, const NodeVec &diff_childs )
+/*
+  enum BinTemplCondType {
+    TEMPL_CONDITION_SINGLE, TEMPL_CONDITION_MULTI, TEMPL_CONDITION_BLOCK
+  };
+
+  enum BinTemplLiType {
+    TEMPL_LI_NAME_VALUE, TEMPL_LI_VALUE, TEMPL_LI_DEFAULT
+  };
+*/
+string nameIt ( BinTemplType type )  {
+  if ( ( type < TEMPL_CONDITION ) || ( type > TEMPL_UNKNOWN ) )
+    return string ( "NoTyeFound" );
+
+  string array[] = { "TEMPL_CONDITION", "TEMPL_CHARACTERS", "TEMPL_STAR", "TEMPL_TOPICSTAR", "TEMPL_THATSTAR", "TEMPL_THAT",
+    "TEMPL_INPUT", "TEMPL_GET", "TEMPL_BOT", "TEMPL_SET", "TEMPL_LI", "TEMPL_LOWERCASE", "TEMPL_UPPERCASE", "TEMPL_FORMAL",
+    "TEMPL_SENTENCE", "TEMPL_RANDOM", "TEMPL_GOSSIP", "TEMPL_SRAI", "TEMPL_THINK", "TEMPL_LEARN", "TEMPL_SYSTEM",
+    "TEMPL_JAVASCRIPT", "TEMPL_SR", "TEMPL_DATE", "TEMPL_SIZE", "TEMPL_VERSION", "TEMPL_ID", "TEMPL_PERSON", "TEMPL_PERSON2", 
+    "TEMPL_GENDER", "TEMPL_PERSON_SHORT", "TEMPL_PERSON2_SHORT", "TEMPL_GENDER_SHORT", "TEMPL_UNKNOWN" };
+  uint idx = (int)(type - TEMPL_CONDITION );
+  return array[idx];
+}
+
+
+bool decode ( cReadBuffer &read, string &str )
+{
+  size_t dummy, num = 0;
+  read.readNumber ( num );
+  BinTemplType type = (BinTemplType)num;
+cout << " type=" << type << " ";
+
+  switch ( type )  {
+  case TEMPL_CONDITION:
+cout  << "-----0====> " << nameIt ( type ) << " ";
+
+  case TEMPL_CHARACTERS: // 1
+    read.readString ( str, true );
+  break;
+  case TEMPL_STAR:
+  case TEMPL_TOPICSTAR:
+  case TEMPL_THATSTAR:
+  case TEMPL_THAT:
+  case TEMPL_INPUT:
+  case TEMPL_GET:
+  case TEMPL_BOT:
+  case TEMPL_SET:
+  case TEMPL_LI:
+  case TEMPL_LOWERCASE:
+  case TEMPL_UPPERCASE:
+  case TEMPL_FORMAL:
+  case TEMPL_SENTENCE:
+  case TEMPL_RANDOM:
+  case TEMPL_GOSSIP:
+cout << "-----1====> " << nameIt ( type ) << " ";
+  break;
+  case TEMPL_SRAI:   // 17
+    str += "link \"";
+    read.readNumber ( dummy );
+    decode ( read, str );
+    str += "\"";
+  break;
+  case TEMPL_THINK:
+  case TEMPL_LEARN:
+  case TEMPL_SYSTEM:
+  case TEMPL_JAVASCRIPT:
+  case TEMPL_SR:
+  case TEMPL_DATE:
+  case TEMPL_SIZE:
+  case TEMPL_VERSION:
+  case TEMPL_ID:
+  case TEMPL_PERSON:
+  case TEMPL_PERSON2:
+  case TEMPL_GENDER:
+  case TEMPL_PERSON_SHORT:
+  case TEMPL_PERSON2_SHORT:
+  case TEMPL_GENDER_SHORT:
+  case TEMPL_UNKNOWN:
+  default:
+cout << "-----2====> " << nameIt ( type ) << " ";
+  break;
+  }
+  return true;
+}
+
+bool decode ( const cWriteBuffer &wb, ofstream &file, int iDepth )
+{
+  cReadBuffer read ( wb );
+  read.seek ( 0, 0 );
+  //size_t readString(std::string& str, bool append = false);
+  //size_t readNumber(size_t& num);
+  string str;
+  size_t num = 0;
+  read.readNumber ( num );
+cout << "num=" << num << " ";
+
+  if ( ! decode ( read, str ) )
+    return false;
+
+  file << str << endl;
+/*  switch ( typ )  { case NODE_PATT: break; case NODE_THAT: break; case NODE_TOPIC: break; } */
+
+cout << " str=" << str << endl;
+  return true;
+}
+
+bool AISLparser::writeChilds ( ofstream &file, const NodeVec &same_childs, const NodeVec &diff_childs, int iDepth )
 {
 //  if ( ! writeNumber ( file, same_childs.size ( ) ) || ! writeNumber ( file, diff_childs.size ( ) ) )
 //    return false; 
 
   NodeVec children = same_childs;
   NodeVec::const_iterator it = children.begin ( );
+  if ( ++iDepth >= (int)m_path.size ( ) )
+    m_path.push_back ( "" );
 
 // < const aiml::Node*, std::vector<aiml::Node> >
 /*class Node;
@@ -175,19 +282,30 @@ bool AISLparser::writeChilds ( ofstream &file, const NodeVec &same_childs, const
       bool operator< (const Node& other) const;
   }; */
 
-
   for ( int t=0; t<2; t++ )  {
     while ( it != children.end ( ) )  {
       const Node *pVec = &(*it++);
-      if ( ! writeString ( file, pVec->key ) )
-        return false;
-      file << "  ";
+      m_path[iDepth] = pVec->key;
 
-      if ( ! it->templ.empty ( ) ) {
-        if ( ! it->templ.writeToFile ( file ) )
-          return false; 
+      if ( ! pVec->templ.empty ( ) ) {
+        file << "match ";
+        for ( int t=0; t<iDepth; t++ )  {
+          file << m_path[t] << " ";
+        }
+//        file << endl;
+
+for ( int t=0; t<iDepth; t++ )
+  cout << m_path[t] + " ";
+cout << endl;
+        decode ( pVec->templ, file, iDepth ); // pVec-type
+
+//        if ( ! it->templ.writeToFile ( file ) )
+//          return false; 
       }
-      file << endl;
+      else {
+        if ( ! writeChilds ( file, pVec->same_childs, pVec->diff_childs, iDepth ) )
+          return false;
+      }
     }
     children = diff_childs;
     it = children.begin ( );

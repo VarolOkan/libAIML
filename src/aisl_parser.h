@@ -24,6 +24,7 @@
 #define AISL_VERSION_NUMBER  "1.0.0"
 
 #include <string>
+#include <vector>
 //#include <fstream>
 
 namespace aiml {
@@ -41,8 +42,10 @@ class AISLparser {
 
     bool readChilds   ( std::ifstream &file, NodeVec &sameChilds, NodeVec &diffChilds, NodeType type );
     bool checkForLeaf ( std::ifstream &file, bool &isLeaf );
-    bool writeChilds  ( std::ofstream &file, const NodeVec &same_childs, const NodeVec &diff_childs );
+    bool writeChilds  ( std::ofstream &file, const NodeVec &same_childs, const NodeVec &diff_childs, int );
     void set_error    ( aiml::AIMLError );
+
+    std::vector<std::string> m_path;
 };
 
 }
