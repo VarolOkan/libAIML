@@ -74,7 +74,7 @@ then
     V8_LIBS+=" -lv8_libbase.x64 "
   else
     if test -f "$V8_LIB_PATH/libv8_libbase.a"; then
-      V8_LIBS+=" -lv8_libbase.ia32 "
+      V8_LIBS+=" -lv8_libbase "
     else
       AC_MSG_ERROR([library does NOT exist : "$V8_LIB_PATH/libv8_libbase.???.a" ])
     fi
