@@ -181,7 +181,7 @@ bool decode ( cReadBuffer &read, string &str )
   size_t dummy, num = 0;
   read.readNumber ( num );
   BinTemplType type = (BinTemplType)num;
-cout << " type=" << type << " ";
+cout << " type=" << nameIt ( type ) << " size=" << read.size ( );
 
   switch ( type )  {
   case TEMPL_CONDITION:
@@ -189,6 +189,18 @@ cout  << "-----0====> " << nameIt ( type ) << " ";
 
   case TEMPL_CHARACTERS: // 1
     read.readString ( str, true );
+cout << " str=" << str << " pos=" << read.tell ( );
+    read.readNumber ( num );
+cout << " nbr=" << num << " pos=" << read.tell ( );
+    read.readNumber ( num );
+cout << " nbr=" << num << " pos=" << read.tell ( );
+    read.readNumber ( num );
+cout << " nbr=" << num << " pos=" << read.tell ( );
+    read.readNumber ( num );
+cout << " nbr=" << num << " pos=" << read.tell ( );
+
+    read.readString ( str, true );
+cout << " str=" << str << " pos=" << read.tell ( );;
   break;
   case TEMPL_STAR:
   case TEMPL_TOPICSTAR:

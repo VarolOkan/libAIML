@@ -60,6 +60,7 @@ namespace aiml {
       size_t discardString(void);
       
       size_t seek(size_t new_pos, size_t offset = 0);
+      size_t size(void) const;
       size_t tell(void) const;
       bool at_end(void) const;
 
@@ -71,7 +72,8 @@ namespace aiml {
       cReadBuffer(void);
 
       const std::vector<char>& data;
-      size_t pos, size;
+      size_t m_pos;
+      size_t m_size;
   };
 
   // for CAIML

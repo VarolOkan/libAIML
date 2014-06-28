@@ -108,18 +108,18 @@ void cWriteBuffer::clear(void) {
 /**
  * cReadBuffer
  */
-cReadBuffer::cReadBuffer(const cWriteBuffer& wr_buff) : data(wr_buff.data), pos(wr_buff.pos), size(wr_buff.data.size()) { }
+cReadBuffer::cReadBuffer(const cWriteBuffer& wr_buff) : data(wr_buff.data), m_pos(wr_buff.pos), m_size(wr_buff.data.size()) { }
 
 size_t cReadBuffer::readString(std::string& str, bool append) {
   size_t len;
   size_t chars_read = readNumber(len);
   _DBG_CODE(msg_dbg() << "length: " << len << endl);
   if (!chars_read) return 0;
-  if ((size - pos) < len) return 0;
+  if ((m_size - m_pos) < len) return 0;
   
   char* buf = new char[len+1];
   size_t i;
-  for (i = 0; i < len; i++, pos++) { buf[i] = data[pos]; }
+  for (i = 0; i < len; i++, m_pos++) { buf[i] = data[m_pos]; }
   buf[i] = '\0';
   if (append) str += buf;
   else str = buf;
@@ -130,11 +130,11 @@ size_t cReadBuffer::readString(std::string& str, bool append) {
 }
   
 size_t cReadBuffer::readNumber(size_t& num) {
-  size_t space_left = size - pos;
+  size_t space_left = m_size - m_pos;
   if (space_left < sizeof(size_t)) return 0;
-  num = ntohl(*(reinterpret_cast<const size_t*>(&data[pos])));
+  num = ntohl(*(reinterpret_cast<const size_t*>(&data[m_pos])));
   
-  pos += sizeof(size_t);
+  m_pos += sizeof(size_t);
   return sizeof(size_t);
 }
 
@@ -142,42 +142,46 @@ size_t cReadBuffer::discardString(void) {
   size_t len;
   size_t chars_read = readNumber(len);
   if (!chars_read) return 0;
-  if ((size - pos) < len) return 0;
-  pos += len;
+  if ((m_size - m_pos) < len) return 0;
+  m_pos += len;
   chars_read += len;
   return chars_read;
 }
 
 size_t cReadBuffer::seek(size_t new_pos, size_t offset) {
-  if ((new_pos + offset) > size) return pos;
-  _DBG_CODE(msg_dbg() << "seek to " << new_pos + offset << " was at " << pos << "/" << size << endl);
-  size_t old_pos = pos;
-  pos = offset + new_pos;
+  if ((new_pos + offset) > m_size) return m_pos;
+  _DBG_CODE(msg_dbg() << "seek to " << new_pos + offset << " was at " << m_pos << "/" << size << endl);
+  size_t old_pos = m_pos;
+  m_pos = offset + new_pos;
   return old_pos;
 }
 
+size_t cReadBuffer::size(void) const {
+  return m_size;
+}
+
 size_t cReadBuffer::tell(void) const {
-  return pos;
+  return m_pos;
 }
 
 bool cReadBuffer::at_end(void) const {
-  _DBG_CODE(msg_dbg() << "at_end()? " << pos << "/" << size << endl);
-  return (pos == size);
+  _DBG_CODE(msg_dbg() << "at_end()? " << m_pos << "/" << m_size << endl);
+  return (m_pos == m_size);
 }
 
 void cReadBuffer::to_end(void) {
-  pos = size;
+  m_pos = m_size;
 }
 
 size_t cReadBuffer::limitSize(size_t _size) {
-  size_t old_size = size;
-  if ((_size + pos) <= data.size()) size = (_size + pos);
+  size_t old_size = m_size;
+  if ((_size + m_pos) <= data.size()) m_size = (_size + m_pos);
   return old_size;
 }
 
 void cReadBuffer::restoreSize(size_t _size) {
   if (_size > data.size()) return;
-  size = _size;
+  m_size = _size;
 }
 
 /**
