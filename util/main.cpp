@@ -98,10 +98,12 @@ int main ( int argc, char* argv[] )
     std::vector<string> list = parser.input ( );
     std::vector<string>::iterator it = list.begin ( );
     while ( it != list.end ( ) )  {
+      cout << "Importing : " << *it << endl;
       if ( ! pInterpreter->loadFileType ( *it++, fromType ) )
         throw 1;
     }
 
+    cout << "Output : " << parser.output ( ) << endl;
     if ( ! pInterpreter->saveFileType ( parser.output ( ), toType ) )
       throw 1;
 

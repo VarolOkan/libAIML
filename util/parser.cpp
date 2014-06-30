@@ -50,6 +50,7 @@ Parser::~Parser ( )
 bool Parser::parseCommandLine ( int iArgs, char *pArguments[] )
 {
   int iChar = 0;
+  // Note UNIX file clobering ( I.e. a*.aiml ) is done prioer to entering main
 
   static struct  option longOpts[] =  {
     { "verbose", no_argument,       0, 'v' },
@@ -63,7 +64,6 @@ bool Parser::parseCommandLine ( int iArgs, char *pArguments[] )
   int index = 0;
   std::string strInput;
   while ( true )  {
-    // Note, file clobbering is done in the  getoptfunction
     iChar = getopt_long ( iArgs, pArguments, "vhi:o:", longOpts, &index );
     if ( iChar == -1 )
       break;
@@ -110,54 +110,9 @@ bool Parser::parseCommandLine ( int iArgs, char *pArguments[] )
       cout << "Wrong output type defined " << m_strToType << endl << endl;
       printHelp ( );
     }
-   if ( ! getFileList ( strInput ) ) 
-     cout << "could not find input file(s)." << endl;
   }
 
   return true;
-}
-
-std::string Parser::getPathName ( string &strInput ) 
-{
-//  char pathname[MAXPATHLEN];
-//  if ( getwd ( pathname ) == NULL )
-//    return str;
-  //#include <stdlib.h>
-  char path [PATH_MAX+1];
-  realpath ( strInput.c_str ( ), path );
-  string str ( path );
-  return str;
-}
-
-bool Parser::getFileList ( string &strInput )
-{
-  DIR    *dpdf = NULL;
-  struct dirent *epdf=NULL;
-
-  string str = getPathName ( strInput );
-  dpdf = opendir ( str.c_str ( ) );
-  if ( dpdf != NULL ) {
-    epdf = readdir( dpdf );
-    do  {
-      epdf = readdir( dpdf );
-      str  = epdf->d_name;
-      //printf("Filename: %s",epdf->d_name);
-      std::cout << str << std::endl;
-      epdf = readdir( dpdf );
-    } while ( epdf );
-  }
-/*
-  glob_t glob_result;
-  unsigned int t;
-  string str;
-  glob ( strInput.c_str ( ), GLOB_TILDE, NULL, &glob_result );
-  for ( t=0; t<glob_result.gl_pathc; ++t )  {
-    str = glob_result.gl_pathv[t];
-    m_listInputFiles.push_back ( str );
-    cout << str << endl;
-  }
-*/
-  return false;
 }
 
 void Parser::printHelp ( )
