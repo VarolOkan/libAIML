@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
 <userset>
-  <user name="localhost"/>
+  <user name="localhost">
+    <set name="it"><![CDATA[run]]></set>
+    <set name="topic"><![CDATA[run]]></set>
+  </user>
 </userset>

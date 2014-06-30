@@ -21,6 +21,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "../config.h"
+
 #include "std_util.h"
 #include "../src/aiml.h"
 
@@ -77,17 +79,28 @@ int main ( int argc, char* argv[] )
       fromType = cInterpreter::TYPE_CAIML;
     }
     else if ( parser.fromType ( ) == "aisl" )  {
+#ifdef ENABLE_AISL
       fromType = cInterpreter::TYPE_AISL;
+#else
+      cout << "AISL support not enabled." << endl;
+#endif
     }
     if ( parser.toType ( ) == "aiml" )  {
       toType = cInterpreter::TYPE_AIML;
     }
     else if ( parser.toType ( ) == "aisl" )  {
+#ifdef ENABLE_AISL
       toType = cInterpreter::TYPE_AISL;
+#else
+      cout << "AISL support not enabled." << endl;
+#endif
     }
-
-    if ( ! pInterpreter->loadFileType ( parser.input ( ), fromType ) )
-      throw 1;
+    std::vector<string> list = parser.input ( );
+    std::vector<string>::iterator it = list.begin ( );
+    while ( it != list.end ( ) )  {
+      if ( ! pInterpreter->loadFileType ( *it++, fromType ) )
+        throw 1;
+    }
 
     if ( ! pInterpreter->saveFileType ( parser.output ( ), toType ) )
       throw 1;

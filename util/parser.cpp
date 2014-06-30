@@ -12,10 +12,13 @@
 
 #include <iostream>
 #include <string>
+//#include <vector>
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <dirent.h>
+//#include <glob.h>
 
 #include "parser.h"
 
@@ -57,14 +60,17 @@ bool Parser::parseCommandLine ( int iArgs, char *pArguments[] )
     { 0, 0, 0, 0 } };
 
   bool bSpecType = false;
-  while ( true ) {
-    iChar = getopt_long_only ( iArgs, pArguments, "vhi:o:", longOpts, NULL );
+  int index = 0;
+  std::string strInput;
+  while ( true )  {
+    // Note, file clobbering is done in the  getoptfunction
+    iChar = getopt_long ( iArgs, pArguments, "vhi:o:", longOpts, &index );
     if ( iChar == -1 )
       break;
 
     switch ( iChar ) {
       case 'i':
-        m_strInputName = string ( optarg );
+        strInput = string ( optarg );
       break;
       case 't':
         bSpecType = true;
@@ -84,12 +90,18 @@ bool Parser::parseCommandLine ( int iArgs, char *pArguments[] )
     }
   }
 
-  if ( m_strInputName.empty ( ) || m_strOutputName.empty ( ) )  {
+  m_listInputFiles.push_back ( strInput );
+  while ( optind < iArgs && *pArguments[optind] != '-' )  {
+    m_listInputFiles.push_back ( pArguments[optind] );
+    ++optind;
+  }
+
+  if ( strInput.empty ( ) || m_strOutputName.empty ( ) )  {
     cout << "Missing input or output file." << endl << endl;
     printHelp ( );
   }
   else {
-    m_strFromType = getExtension ( m_strInputName ); 
+    m_strFromType = getExtension ( strInput ); 
     if ( ! bSpecType )  {
       // The user did not specify the output type, so we should deduct this from teh file extension
       m_strToType = getExtension ( m_strOutputName );
@@ -98,11 +110,55 @@ bool Parser::parseCommandLine ( int iArgs, char *pArguments[] )
       cout << "Wrong output type defined " << m_strToType << endl << endl;
       printHelp ( );
     }
+   if ( ! getFileList ( strInput ) ) 
+     cout << "could not find input file(s)." << endl;
   }
 
   return true;
 }
 
+std::string Parser::getPathName ( string &strInput ) 
+{
+//  char pathname[MAXPATHLEN];
+//  if ( getwd ( pathname ) == NULL )
+//    return str;
+  //#include <stdlib.h>
+  char path [PATH_MAX+1];
+  realpath ( strInput.c_str ( ), path );
+  string str ( path );
+  return str;
+}
+
+bool Parser::getFileList ( string &strInput )
+{
+  DIR    *dpdf = NULL;
+  struct dirent *epdf=NULL;
+
+  string str = getPathName ( strInput );
+  dpdf = opendir ( str.c_str ( ) );
+  if ( dpdf != NULL ) {
+    epdf = readdir( dpdf );
+    do  {
+      epdf = readdir( dpdf );
+      str  = epdf->d_name;
+      //printf("Filename: %s",epdf->d_name);
+      std::cout << str << std::endl;
+      epdf = readdir( dpdf );
+    } while ( epdf );
+  }
+/*
+  glob_t glob_result;
+  unsigned int t;
+  string str;
+  glob ( strInput.c_str ( ), GLOB_TILDE, NULL, &glob_result );
+  for ( t=0; t<glob_result.gl_pathc; ++t )  {
+    str = glob_result.gl_pathv[t];
+    m_listInputFiles.push_back ( str );
+    cout << str << endl;
+  }
+*/
+  return false;
+}
 
 void Parser::printHelp ( )
 {
@@ -118,9 +174,9 @@ void Parser::printHelp ( )
   cout << " -o  --out  FILE set output file." << endl << endl;
 }
 
-std::string &Parser::input  ( )
+std::vector<std::string> &Parser::input  ( )
 {
-  return m_strInputName;
+  return m_listInputFiles;
 }
 
 std::string &Parser::output ( )

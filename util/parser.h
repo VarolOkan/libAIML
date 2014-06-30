@@ -15,6 +15,8 @@
 
 #define UTIL_VERSION "0.1"
 
+#include <vector>
+
 class Parser
 {
 public:
@@ -22,16 +24,18 @@ public:
   virtual ~Parser ( );
 
   bool parseCommandLine ( int, char ** );
-  std::string &input    ( );
+  std::vector<std::string> &input    ( );
   std::string &output   ( );
   std::string &toType   ( );
   std::string &fromType ( );
 
 protected:
-  void printHelp ( );
+  void printHelp   ( );
+  bool getFileList ( std::string & );
+  std::string getPathName ( std::string & );
 
 private:
-  std::string m_strInputName;
+  std::vector<std::string> m_listInputFiles;
   std::string m_strOutputName;
   std::string m_strToType;
   std::string m_strFromType;
